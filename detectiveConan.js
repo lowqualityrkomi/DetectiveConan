@@ -6,6 +6,7 @@ class DetectiveConan {
 			enableFormId: true,
 			enableTicketFormRequestId: true,
 			enableAdBlockerDetection: true,
+			enableGetHelpField: true,
 			storageType: "sessionStorage",
 			keyName: "userActivityLogs",
 		};
@@ -27,6 +28,9 @@ class DetectiveConan {
 
 		// Log ticket form request id
 		if (this.settings.enableTicketFormRequestId) this.logTicketFormRequestId();
+
+		// Log get help field in form
+		if (this.settings.enableGetHelpField) this.logGetHelpField();
 
 		// Log AD Blocker
 		if (this.settings.enableAdBlockerDetection) this.logAdBlocker();
@@ -79,12 +83,29 @@ class DetectiveConan {
 	 * This function is used to log if the form selection is visible
 	 */
 	logTicketFormRequestId() {
-		const field = document.querySelector(".request_ticket_form_id");
+	const field = document.querySelector(".request_ticket_form_id");
 
 		if (field) {
-			const isVisible = field.style.display !== "none";
-
+			const isVisible = window.getComputedStyle(field).display !== "none";
 			this.writeLog(`Ticket form request id ${isVisible ? "IS" : "IS NOT"} visible`);
+		}
+	}
+
+	/**
+	 * This function is used to log if the the field "Argomento ricevi assistenza" is inside the form and, if true, log its value
+	 */
+	logGetHelpField() {
+		const inForm = document.querySelector(".request_ticket_form_id") ? true : false;
+
+		if (inForm) {
+			const field = document.querySelector("#request_custom_fields_10082422856220");
+
+			if (field) {
+				this.writeLog(`Argomento ricevi assistenza PRESENTE - value: ${field.value}`);
+			}
+			else {
+				this.writeLog(`Argomento ricevi assistenza ASSENTE`);
+			}
 		}
 	}
 
